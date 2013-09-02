@@ -1,0 +1,3 @@
+[submodule "submodules/toml"]
+	path = submodules/toml
+	url = https://github.com/dlc/toml.git
