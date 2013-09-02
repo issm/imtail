@@ -1,0 +1,6 @@
+# ssh = "you@yourhost"
+files = [
+  "/path/to/yourapp1/var/log/access_log",
+  "/path/to/yourapp1/var/log/error_log",
+  "/path/to/yourapp2/var/log/error_log",
+]

@@ -1,0 +1,27 @@
+#!/bin/bash
+app_basedir=$(cd $(dirname $0)/.. && pwd)
+
+if [ "$IMTAIL_PERL" = "" ]; then
+    IMTAIL_PERL="/usr/bin/env perl"
+fi
+
+if [ "$IMTAIL_SSH" = "" ]; then
+    IMTAIL_SSH="/usr/bin/env ssh"
+fi
+
+cmd=$(\
+    IMTAIL_SSH=$IMTAIL_SSH \
+    $IMTAIL_PERL \
+        -I$app_basedir/submodules/toml \
+        $app_basedir/src/imtail.pl \
+        --pwd=$(pwd) \
+        --basedir=$app_basedir \
+        $@ \
+    )
+perl_exit=$?
+if [ $perl_exit -ne 0 ]; then
+    exit $perl_exit
+fi
+
+echo "[35m$cmd[0m"
+$cmd
