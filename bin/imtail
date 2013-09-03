@@ -1,5 +1,9 @@
 #!/bin/bash
-app_basedir=$(cd $(dirname $0)/.. && pwd)
+this=$0
+while [ -L $this ]; do
+    this=$(readlink $this)
+done
+app_basedir=$(cd $(dirname $this)/.. && pwd)
 
 if [ "$IMTAIL_PERL" = "" ]; then
     IMTAIL_PERL="/usr/bin/env perl"
