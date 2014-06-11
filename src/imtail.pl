@@ -10,11 +10,18 @@ imtail <options>
 
 =over 4
 
-=item -c <file>
+=item -c <basename_or_file>
 
 config file, which should be written in TOML defined in L<https://github.com/mojombo/toml>.
 
 if not specified, C<imtail> searches file, C<$PWD/.imtail.toml> or C<$HOME/.imtail.toml>, automatically.
+
+search priority is as following:
+
+  * $HOME/.imtail.d/${basename_or_file}.toml
+  * $basename_or_file
+  * $PWD/.imtail.toml
+  * $HOME/.imtail.toml
 
 =item -n <number>
 
@@ -94,22 +101,25 @@ sub validate {
     my %args = @_;
     my $show_usage = 0;
     my $conf_file = $args{conf_file};
+    my $conf_file_default = '.imtail.toml';
 
-    my $conf_file_basename = '.imtail.toml';
-    unless ( defined $conf_file ) {
-    FOR_FILE:
-        for my $f (
-            $args{conf_file},
-            "$args{pwd}/${conf_file_basename}",
-            "$ENV{HOME}/${conf_file_basename}",
-        ) {
-            if ( defined $f  &&  -f $f ) {
-                $args{conf_file} = $conf_file = $f;
-                last FOR_FILE;
-            }
-        }
+    my @search_target;
+    if ( defined $conf_file ) {
+        push @search_target, (
+            "$ENV{HOME}/.imtail.d/${conf_file}.toml",
+            ${conf_file},
+        );
     }
-    unless ( defined $conf_file  &&  -f $conf_file ) {
+    push @search_target, (
+        "$args{pwd}/${conf_file_default}",
+        "$ENV{HOME}/${conf_file_default}",
+    );
+
+    ($conf_file) = grep -f , @search_target;
+    if ( defined $conf_file ) {
+        $args{conf_file} = $conf_file;
+    }
+    else {
         warn 'config file is not specified or does not exist';
         $show_usage = 1;
     }
