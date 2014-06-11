@@ -10,11 +10,18 @@ imtail <options>
 
 =over 4
 
-=item -c <file>
+=item -c <basename_or_file>
 
 config file, which should be written in TOML defined in L<https://github.com/mojombo/toml>.
 
 if not specified, C<imtail> searches file, C<$PWD/.imtail.toml> or C<$HOME/.imtail.toml>, automatically.
+
+search priority is as following:
+
+  * $HOME/.imtail.d/${basename_or_file}.toml
+  * $basename_or_file
+  * $PWD/.imtail.toml
+  * $HOME/.imtail.toml
 
 =item -n <number>
 
