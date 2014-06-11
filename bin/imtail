@@ -4,6 +4,7 @@ while [ -L $this ]; do
     this=$(readlink $this)
 done
 app_basedir=$(cd $(dirname $this)/.. && pwd)
+test=0
 
 if [ "$IMTAIL_PERL" = "" ]; then
     IMTAIL_PERL="/usr/bin/env perl"
@@ -23,9 +24,15 @@ cmd=$(\
         $@ \
     )
 perl_exit=$?
-if [ $perl_exit -ne 0 ]; then
+
+if [ $perl_exit = 2 ]; then
+    test=1
+elif [ $perl_exit -ne 0 ]; then
     exit $perl_exit
 fi
 
 echo "[35m$cmd[0m"
+if [ $test = 1 ]; then
+    exit 0
+fi
 $cmd
