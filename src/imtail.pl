@@ -27,6 +27,10 @@ search priority is as following:
 
 shows <number> lines.
 
+=item -t
+
+just test the config file and show results.
+
 =item -h | --help
 
 shows this usage.
@@ -74,6 +78,7 @@ my %opts = (
     basedir   => undef,
     conf_file => undef,
     n         => 10,
+    test      => 0,
     help      => 0,
 );
 GetOptions(
@@ -81,6 +86,7 @@ GetOptions(
     'basedir=s' => \$opts{basedir},
     'c=s'       => \$opts{conf_file},
     'n=i'       => \$opts{n},
+    't'         => \$opts{test},
     'h|help'    => \$opts{help},
 ) or usage();
 usage()  if $opts{help};
@@ -164,7 +170,7 @@ sub main {
     $out .= "tail -Fn$args{n} @files";
 
     print STDOUT $out;  # pass to shellscript
-    return 0;
+    return $args{test} ? 2 : 0;
 }
 
 exit main();
