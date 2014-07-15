@@ -7,7 +7,11 @@ app_basedir=$(cd $(dirname $this)/.. && pwd)
 test=0
 
 if [ "$IMTAIL_PERL" = "" ]; then
-    IMTAIL_PERL="/usr/bin/env perl"
+    if [ "$PLENV_VERSION" != "" ]; then
+        IMTAIL_PERL="/usr/bin/env plenv exec perl"
+    else
+        IMTAIL_PERL="/usr/bin/env perl"
+    fi
 fi
 
 if [ "$IMTAIL_SSH" = "" ]; then
@@ -15,6 +19,7 @@ if [ "$IMTAIL_SSH" = "" ]; then
 fi
 
 cmd=$(\
+    PLENV_VERSION=$PLENV_VERSION \
     IMTAIL_SSH=$IMTAIL_SSH \
     $IMTAIL_PERL \
         -I$app_basedir/submodules/toml \
